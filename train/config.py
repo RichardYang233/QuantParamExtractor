@@ -18,7 +18,7 @@ configs = {
     "LeNet": {
         "lr": 0.01,
         "momentum": 0.5,
-        "epoch": 2,
+        "epoch": 4,
         "optimizer": "SGD",
         "criterion": "CrossEntropyLoss"
     },
