@@ -24,7 +24,7 @@ for batch in tqdm(test_loader):
 
     inputs, labels = batch
     
-    # quant
+    # flatten & quant
     quant_layer_input = flatten_MNIST_image(inputs)
     quant_layer_output = quantize(quantized_model.quant, quant_layer_input)
 
