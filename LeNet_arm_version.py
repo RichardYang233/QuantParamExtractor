@@ -18,6 +18,12 @@ total = 0
 
 # ---------- 推理 ---------- #
 
+conv1_simulator = ConvQuantSim(quantized_model.quant, quantized_model.conv1)
+conv2_simulator = ConvQuantSim(quantized_model.conv1, quantized_model.conv2)
+fc1_simulator = FCQuantSim(quantized_model.conv2, quantized_model.fc1)
+fc2_simulator = FCQuantSim(quantized_model.fc1, quantized_model.fc2)
+fc3_simulator = FCQuantSim(quantized_model.fc2, quantized_model.fc3)
+
 for batch in tqdm(test_loader):
 
     inputs, labels = batch
@@ -27,26 +33,26 @@ for batch in tqdm(test_loader):
 
     # conv1 & relu & maxpool1
     conv1_input = quant_layer_output
-    conv1_output = torch_conv2d_s8(conv1_input, quantized_model.quant, quantized_model.conv1)
+    conv1_output = conv1_simulator.arm_convolve_s8(conv1_input)
 
     # conv2 & relu & maxpool2
     conv2_input = conv1_output
-    conv2_output = torch_conv2d_s8(conv2_input, quantized_model.conv1, quantized_model.conv2)
+    conv2_output = conv2_simulator.arm_convolve_s8(conv2_input)
 
     # flatten
     conv2_output = conv2_output.reshape(conv2_output.shape[0], -1)
 
     # fc1
     fc1_input = conv2_output
-    fc1_output = torch_fully_connected_s8(fc1_input, quantized_model.conv2, quantized_model.fc1)
+    fc1_output = fc1_simulator.arm_fully_connected_s8(fc1_input)
 
     # fc2
     fc2_input = fc1_output
-    fc2_output = torch_fully_connected_s8(fc2_input, quantized_model.fc1, quantized_model.fc2)
+    fc2_output = fc2_simulator.arm_fully_connected_s8(fc2_input)
 
     # fc3
     fc3_input = fc2_output
-    fc3_output = torch_fully_connected_s8(fc3_input, quantized_model.fc2, quantized_model.fc3)
+    fc3_output = fc3_simulator.arm_fully_connected_s8(fc3_input)
 
     # argmax
     results = torch.argmax(fc3_output, dim=1)
