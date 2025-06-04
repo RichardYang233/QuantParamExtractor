@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 # --------------------------------------------------------------------------------
 # 主要功能
@@ -71,6 +73,27 @@ def torch_fully_connected_s8(input, last_layer, current_layer):
     output_int8_relu = torch.relu(output_int8)
 
     return output_int8_relu
+
+def torch_conv2d_s8(input, last_layer, current_layer):
+    '''
+    模拟卷积层的量化推理
+    '''
+    input_int32 = input.to(torch.int32)
+    weight_int32 = _get_weight(current_layer).to(torch.int32)
+    bias_int32 = calculate_bias_int32(current_layer, last_layer).to(torch.int32)
+
+    # NOTE: 这里的计算顺序不对会报错
+    # conv2d
+    output_int32 = F.conv2d(input_int32, weight_int32, bias_int32) # , stride=1, padding=1
+    # pool
+    output_int32_pool = F.max_pool2d(output_int32, kernel_size = 2, stride = 2)
+    # dequant with [scale] and [zero_point] 
+    output_int8_pool = dequant_with_scale_and_zero_point(output_int32_pool, last_layer, current_layer) # NOTE： 暂时使用，需更换到 @dequant_with_mult_and_shift()
+    # relu
+    output_int8_pool_relu = torch.relu(output_int8_pool)
+    
+    return output_int8_pool_relu
+
 
 # --------------------------------------------------------------------------------
 # 

@@ -5,6 +5,7 @@ import csv
 from train import *
 
 FCNET_PARAMS_SAVE_PATH = './parameter/FCNet_params.pt'
+LENET_PARAMS_SAVE_PATH = './parameter/LeNet_params.pt'
 
 
 def save_state_dict(state_dict: dict, path: str) -> None:
