@@ -29,16 +29,16 @@ class ConvQuantSim:
         weight_int32 = self.weight_int8.to(torch.int32)
         bias_int32 = self.bias_int32.to(torch.int32)
 
-        # NOTE: 这里的计算顺序不对会报错
         # conv2d
         output_int32 = F.conv2d(input_int32, weight_int32, bias_int32) # , stride=1, padding=1
-        # pool
-        output_int32_pool = F.max_pool2d(output_int32, kernel_size = 2, stride = 2)
-        # dequant with [mult] and [shift]
-        output_int8_pool = dequant_with_mult_and_shift(output_int32_pool, self.multiplier, self.shift, self.zero_point)
         # relu
-        output_int8_pool_relu = torch.relu(output_int8_pool)
-
-        return output_int8_pool_relu
+        output_int32_relu = torch.relu(output_int32)
+        # dequant with [mult] and [shift]
+        output_int8_relu = dequant_with_mult_and_shift(output_int32_relu, self.multiplier, self.shift, self.zero_point)
+        output_int8_relu = output_int8_relu.to(torch.int32) # 如果是 int8 会导致 pool 步骤报错
+        # pool
+        output_int8_relu_pool = F.max_pool2d(output_int8_relu, kernel_size = 2, stride = 2)
+        
+        return output_int8_relu_pool.to(torch.int8) # 再转回 int8
 
 
