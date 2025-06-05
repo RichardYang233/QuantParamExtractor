@@ -14,12 +14,15 @@ flowchart LR
 
 ### 功能特性
 
-| 功能           | 是/否实现 | 备注        |
-| -------------- | --------- | ----------- |
-| 全连接层（FC） | ✅         | 2层全连接层 |
-| 卷积层（Conv） |           | LeNet       |
-| ReLU           | ✅         |             |
-| ==TODO==       |           |             |
+note：“实现” 指的是该功能在 **CMSIS-NN 推理** 和 **torch 量化推理** 实现对齐
+
+| 功能            | 是/否实现 | 备注                   |
+| --------------- | --------- | ---------------------- |
+| 全连接（FC）    | ✅         |                        |
+| 卷积（Conv）    |           | 存在舍入导致的细微误差 |
+| 池化（pooling） |           |                        |
+| ReLU            | ✅         |                        |
+| ==TODO==        |           |                        |
 
 ### 文件构成
 
@@ -58,5 +61,7 @@ flowchart LR
 
 ---
 
+### 参考
 
+[Awesome Compression - github](https://github.com/datawhalechina/awesome-compression?tab=readme-ov-file)
 
