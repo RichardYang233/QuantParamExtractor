@@ -43,8 +43,7 @@ for epoch_round in range(epoch):
 
 
 # save model
-params_save_path = './parameter/LeNet_params.pt'
-save_state_dict(best_checkpoint['state_dict'], params_save_path)
+save_state_dict(best_checkpoint['state_dict'], LENET_PARAMS_SAVE_PATH)
 
 # show best_checkpoint
 print(f"=> loading best checkpoint")
