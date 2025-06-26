@@ -12,56 +12,59 @@ flowchart LR
     D --> E[CMSIS-NN 部署]
 ```
 
+### 依赖
+
++ Python 3.8+
+  + torch  2.5.1
+  + torchvision 0.20.1
++ MNIST
+
+### 目录结构
+
++ [`CMSIS_NN_simulator`]()：CMSIS-NN 神经网络算子模拟
++ [`dataset`]()：储存 MNIST 数据
++ [`doc`]()：一些相关文档
++ [`eval`]()：模型评估
++ [`models`]()：Pytorch 模型、量化模型
++ [`parameter`]()：储存模型参数
++ [`train`]()：模型训练、训练参数
++ [`utils`]()：一些常用功能
+
 ### 功能特性
 
-note：“实现” 指的是该功能在 **CMSIS-NN 推理** 和 **torch 量化推理** 实现对齐
+**Note**：“实现” 指的是该功能在 **CMSIS-NN 推理** 和 **torch 量化推理** 实现对齐
 
 | 功能            | 是/否实现 | 备注                           |
 | --------------- | --------- | ------------------------------ |
 | 全连接（FC）    | ✅         |                                |
-| 卷积（Conv）    |           | 存在细微误差；未实现逐通道量化 |
-| 池化（pooling） |           |                                |
+| 卷积（Conv）    | ✅         | 存在细微误差；未实验逐通道量化 |
+| 池化（pooling） | ✅         |                                |
 | ReLU            | ✅         |                                |
+| LSTM            |           |                                |
 | ==TODO==        |           |                                |
 
-### 文件构成
+### 如何使用
 
-| 文件夹              | 描述                   | 备注       |
-| ------------------- | ---------------------- | ---------- |
-| `CMSIS_NN_function` | 模拟 CMSIS-NN 量化推理 |            |
-| `dataset`           | mnist 数据集相关       |            |
-| `eval`              | 评估模型               |            |
-| `models`            | 模型、量化模型         | torch      |
-| `old_file`          | 走过的弯路，用于总结   |            |
-| `parameter`         | 模型参数               | 原始、量化 |
-| `test`              |                        |            |
-| `train`             | 训练、参数             |            |
-| `utils`             | 未明确分类的功能       |            |
+1. 训练：获取原始模型参数
 
-`train_FCnet.py`：模型训练，获取原始参数
+```powershell
+python xxNet_train.py
+```
 
-`torch_version.py`：模拟  Pytorch 量化模型推理
+2. 
 
-`arm_version.py`：模拟 CMSIS-NN 推理
-
-### 依赖
-
-+ Python 3.8+
-+ torch  2.5.1
-+ torchvision 0.20.1
-+ MNIST
-+ CMSIS-NN Library
-
-### TODO
-
-- [ ]  支持更多层类型（目前仅支持 Linear）
-- [ ]  支持 per-channel weight quantization
+```powershell
+python xxNet_cmsisnn.py
+```
 
 
 
 ---
 
-### 参考
+### 参考资料
 
-[Awesome Compression - github](https://github.com/datawhalechina/awesome-compression?tab=readme-ov-file)
++ [PyTorch documentation](https://docs.pytorch.org/docs/stable/index.html)
 
++ [CMSIS NN Software Library](https://arm-software.github.io/CMSIS_6/latest/NN/index.html)
+
++ [Awesome Compression - github](https://github.com/datawhalechina/awesome-compression?tab=readme-ov-file)

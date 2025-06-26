@@ -29,7 +29,7 @@ class ConvQuantSim:
         bias_int32 = self.bias_int32.to(torch.int32)
 
         # conv2d
-        output_int32 = F.conv2d(input_int32, weight_int32, bias_int32) # , stride=1, padding=1
+        output_int32 = F.conv2d(input_int32, weight_int32, bias_int32) # stride=1, padding=0
         # relu
         output_int32_relu = torch.relu(output_int32)
         # dequant with [mult] and [shift]
