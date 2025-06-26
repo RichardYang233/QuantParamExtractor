@@ -1,12 +1,12 @@
 import torch
 
-from dataset import *
-from utils.state_dict_utils import load_state_dict_2_model
+from utils.mnist_util import get_DataLoader
+from utils.params_util import load_state_dict_2_model
 
 
 def generate_q_model(QuantizedModel, state_dict_path):
 
-    # ------------ MNIST Loader &  Quantized Model ------------ # 
+    # ------------ MNIST Loader & Quantized Model ------------ # 
 
     _, test_loader = get_DataLoader(64)
 
@@ -18,14 +18,10 @@ def generate_q_model(QuantizedModel, state_dict_path):
     model.qconfig = torch.quantization.get_default_qconfig('qnnpack')
     model.qconfig = torch.quantization.QConfig(
         activation=torch.quantization.default_observer.with_args(
-            quant_min=0,          
-            quant_max=127         
-        ),
+            quant_min=0, quant_max=127),
         weight=torch.quantization.default_weight_observer.with_args(
-            quant_min=-127,        
-            quant_max=127          
-        )
-    )
+            quant_min=-127, quant_max=127))
+    
     model = torch.quantization.fuse_modules(model, [['hidden_layer', 'relu']])  
     model = torch.quantization.prepare(model, inplace=False)    
 
@@ -43,6 +39,16 @@ def generate_q_model(QuantizedModel, state_dict_path):
 
 
 def generate_q_LeNet(QuantizedModel, state_dict_path):
+    """
+    用于将 LeNet 模型转为量化版本
+
+    Args:
+        QuantizedModel: 与 LeNet 匹配的量化模型
+        state_dict_path: LeNet 模型参数保存地址
+
+    Returns:
+        q_model: 量化版本的 LeNet 模型
+    """
 
     # ------------ MNIST Loader &  Quantized Model ------------ # 
 
@@ -60,8 +66,10 @@ def generate_q_LeNet(QuantizedModel, state_dict_path):
                                                     ['fc1', 'relu3'], 
                                                     ['fc2', 'relu4']])
     model.qconfig = torch.quantization.QConfig(
-            activation=torch.quantization.default_observer.with_args(quant_min=0, quant_max=127),
-            weight=torch.quantization.default_weight_observer.with_args(quant_min=-128, quant_max=127))
+            activation=torch.quantization.default_observer.with_args(
+                quant_min=0, quant_max=127),
+            weight=torch.quantization.default_weight_observer.with_args(
+                quant_min=-128, quant_max=127))
     
     model = torch.quantization.prepare(model, inplace=False)
 

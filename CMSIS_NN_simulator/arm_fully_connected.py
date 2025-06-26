@@ -53,24 +53,41 @@ class FCQuantSim:
         output_int8_relu = torch.relu(output_int8) # output_int8_relu = torch.maximum(output_int8, torch.tensor(current_layer.zero_point, dtype=output_int8.dtype))
 
         return output_int8_relu
-
-def torch_fully_connected_s8(input, last_layer, current_layer):
-    '''
-    模拟全连接层的量化推理,
-    目前看来可以等价于 pytorch 的量化推理    # NOTE: pytorch的实际量化流程待查找
-    '''
-    input_int32  = input.to(torch.int32)
-    weight_int32 = get_weight(current_layer).to(torch.int32)
-    bias_int32   = calculate_bias_int32(current_layer, last_layer).to(torch.int32) 
     
-    # output = input @ weight.T + bias
-    output_int32 = linear(input_int32, weight_int32, bias_int32)
+    def _get_multiplier(self):
+        return self.multiplier
 
-    # dequant with [scale] and [zero_point]
-    output_int8 = dequant_with_scale_and_zero_point(output_int32, last_layer, current_layer)
+    def _get_shift(self):
+        return self.shift
 
-    # relu
-    output_int8_relu = torch.relu(output_int8)
+    def _get_zero_point(self):
+        return self.zero_point
+    
+    # 打印 CMSIS-NN 反量化所需参数
+    def print_multi_shift_zero_point(self):
+        dict = {'multiplier': self._get_multiplier(),
+                'shift': self._get_shift(),
+                'zero_point': self._get_zero_point()}
+        print(dict)
 
-    return output_int8_relu
+
+# def torch_fully_connected_s8(input, last_layer, current_layer):
+#     '''
+#     模拟全连接层的量化推理,
+#     目前看来可以等价于 pytorch 的量化推理    # TODO: pytorch的实际量化流程待查找
+#     '''
+#     input_int32  = input.to(torch.int32)
+#     weight_int32 = get_weight(current_layer).to(torch.int32)
+#     bias_int32   = calculate_bias_int32(current_layer, last_layer).to(torch.int32) 
+    
+#     # output = input @ weight.T + bias
+#     output_int32 = linear(input_int32, weight_int32, bias_int32)
+
+#     # dequant with [scale] and [zero_point]
+#     output_int8 = dequant_with_scale_and_zero_point(output_int32, last_layer, current_layer)
+
+#     # relu
+#     output_int8_relu = torch.relu(output_int8)
+
+#     return output_int8_relu
 

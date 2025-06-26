@@ -5,7 +5,7 @@ from train import *
 from eval import *
 from dataset import *
 from utils import *
-from CMSIS_NN_function import *
+from CMSIS_NN_simulator import *
 
 
 quantized_model = generate_q_model(QuantizedFCNet(), FCNET_PARAMS_SAVE_PATH)
@@ -58,13 +58,13 @@ print(f"原始模型精度: {accuracy:.2f}%")
 
 # # 保存 weight、bias 至 C数组
 # print(hidden_layer_simulator.weight_int8.size())
-# tensor_2_c_array(hidden_layer_simulator.weight_int8, "hidden_layer_weight", "hidden_layer_weight", "int8_t")
+# export_tensor_as_c_array(hidden_layer_simulator.weight_int8, "hidden_layer_weight", "hidden_layer_weight", "int8_t")
 # print(hidden_layer_simulator.bias_int32.size())
-# tensor_2_c_array(hidden_layer_simulator.bias_int32, "hidden_layer_bias", "hidden_layer_bias", "int32_t")
+# export_tensor_as_c_array(hidden_layer_simulator.bias_int32, "hidden_layer_bias", "hidden_layer_bias", "int32_t")
 # print(output_layer_simulator.weight_int8.size())
-# tensor_2_c_array(output_layer_simulator.weight_int8, "output_layer_weight", "output_layer_weight", "int8_t")
+# export_tensor_as_c_array(output_layer_simulator.weight_int8, "output_layer_weight", "output_layer_weight", "int8_t")
 # print(output_layer_simulator.bias_int32.size())
-# tensor_2_c_array(output_layer_simulator.bias_int32, "output_layer_bias", "output_layer_bias", "int32_t")
+# export_tensor_as_c_array(output_layer_simulator.bias_int32, "output_layer_bias", "output_layer_bias", "int32_t")
 
 print(hidden_layer_simulator.multiplier)
 print(hidden_layer_simulator.shift)

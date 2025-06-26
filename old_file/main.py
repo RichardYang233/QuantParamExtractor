@@ -7,7 +7,7 @@ from dataset import *
 from utils import *
 
 
-quant_model_creater = generate_q_model(QuantizedFCNet(), FCNET_PARAMS_SAVE_PATH)
+model_util = generate_q_model(QuantizedFCNet(), FCNET_PARAMS_SAVE_PATH)
 
 Multiplier = []
 Shift = []
@@ -24,19 +24,19 @@ for batch in tqdm(test_loader):
 
     # quant
     quant_layer_input = flatten_MNIST_image(inputs)
-    quant_layer_output = quantize(quant_model_creater.quant, quant_layer_input)
+    quant_layer_output = quantize(model_util.quant, quant_layer_input)
 
     # hidden_layer
     hidden_layer_input = quant_layer_output
-    hidden_layer_output = arm_fully_connected_s8_TEST(quant_model_creater.quant       ,
-                                                      quant_model_creater.hidden_layer, 
+    hidden_layer_output = arm_fully_connected_s8_TEST(model_util.quant       ,
+                                                      model_util.hidden_layer, 
                                                       hidden_layer_input          ,
                                                       multiplier = 1185513671, shift = 11)
 
     # output_layer
     output_layer_input = hidden_layer_output
-    output_layer_output = arm_fully_connected_s8_TEST(quant_model_creater.hidden_layer, 
-                                                      quant_model_creater.output_layer,
+    output_layer_output = arm_fully_connected_s8_TEST(model_util.hidden_layer, 
+                                                      model_util.output_layer,
                                                       output_layer_input          ,
                                                       multiplier = 1110397882, shift = 9)
     
@@ -49,7 +49,7 @@ for batch in tqdm(test_loader):
 
 print(f"CMSIS-NN计算精度: {correct/total*100:.2f}%")
 
-accuracy = evaluate(quant_model_creater, test_loader)
+accuracy = evaluate(model_util, test_loader)
 print(f"量化模型精度: {accuracy:.2f}%")
 
 model = load_state_dict_2_model(FCNet(), FCNET_PARAMS_SAVE_PATH) 

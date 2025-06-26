@@ -1,12 +1,10 @@
 import torch
-import torch.nn as nn
 
 from models import *
 from train import *
 from eval import *
-from dataset import *
 from utils import *
-from CMSIS_NN_function import *
+from CMSIS_NN_simulator import *
 
 
 quantized_model = generate_q_LeNet(QuantizedLeNet(), LENET_PARAMS_SAVE_PATH)
@@ -57,7 +55,7 @@ for batch in tqdm(test_loader):
     # argmax
     results = torch.argmax(fc3_output, dim=1)
 
-    # 
+    # 结果统计
     count = (results == labels).sum().item()
     correct += count
     total += results.shape[0]
@@ -73,3 +71,29 @@ print(f"torch量化模型精度: {accuracy:.2f}%")
 model = load_state_dict_2_model(LeNet(), LENET_PARAMS_SAVE_PATH) 
 accuracy = evaluate(model, test_loader)
 print(f"原始模型精度: {accuracy:.2f}%")
+
+
+# ---------- 保存 weight、bias 至 C数组 ---------- #
+
+export_tensor_as_c_array(conv1_simulator.weight_int8, "./parameter/LeNet/", "conv1_kernel", "conv1_kernel", "int8_t")
+export_tensor_as_c_array(conv1_simulator.bias_int32, "./parameter/LeNet/", "conv1_bias", "conv1_bias", "int32_t")
+export_tensor_as_c_array(conv2_simulator.weight_int8, "./parameter/LeNet/", "conv2_kernel", "conv2_kernel", "int8_t")
+export_tensor_as_c_array(conv2_simulator.bias_int32, "./parameter/LeNet/", "conv2_bias", "conv2_bias", "int32_t")
+
+export_tensor_as_c_array(fc1_simulator.weight_int8, "./parameter/LeNet/", "fc1_weight", "fc1_weight", "int8_t")
+export_tensor_as_c_array(fc1_simulator.bias_int32, "./parameter/LeNet/", "fc1_bias", "fc1_bias", "int32_t")
+export_tensor_as_c_array(fc2_simulator.weight_int8, "./parameter/LeNet/", "fc2_weight", "fc2_weight", "int8_t")
+export_tensor_as_c_array(fc2_simulator.bias_int32, "./parameter/LeNet/", "fc2_bias", "fc2_bias", "int32_t")
+export_tensor_as_c_array(fc3_simulator.weight_int8, "./parameter/LeNet/", "fc3_weight", "fc3_weight", "int8_t")
+export_tensor_as_c_array(fc3_simulator.bias_int32, "./parameter/LeNet/", "fc3_bias", "fc3_bias", "int32_t")
+
+# ---------- print 反量化参数 ---------- #
+
+conv1_simulator.print_multi_shift_zero_point()
+conv2_simulator.print_multi_shift_zero_point()
+fc1_simulator.print_multi_shift_zero_point()
+fc2_simulator.print_multi_shift_zero_point()
+fc3_simulator.print_multi_shift_zero_point()
+
+
+
