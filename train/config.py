@@ -29,5 +29,13 @@ configs = {
         "epoch": 10,
         "optimizer": "RMS",
         "criterion": "CrossEntropyLoss"
+    },
+
+    "LSTM": {
+        "lr": 0.005,
+        "momentum": 0.9,
+        "epoch": 5,
+        "optimizer": "SGD",
+        "criterion": "CrossEntropyLoss"
     }
 }

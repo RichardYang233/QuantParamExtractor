@@ -11,6 +11,7 @@ from train import *
 
 FCNET_PARAMS_SAVE_PATH = './parameter/FCNet/FCNet_params.pt'
 LENET_PARAMS_SAVE_PATH = './parameter/LeNet/LeNet_params.pt'
+LSTM_PARAMS_SAVE_PATH = './parameter/LSTM/LSTM_params.pt'
 
 def save_state_dict(state_dict: dict, path: str) -> None:
     '''
