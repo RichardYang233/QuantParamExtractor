@@ -2,12 +2,12 @@
 
 ### 简介
 
-本项目用于从 **PyTorch** 神经网络模型提取量化参数，以满足 **CMSIS-NN** 推理时的要求，实现模型在 pytorch 和 CMSIS-NN 上的效果对齐
+本项目用于从 **PyTorch** 神经网络模型提取量化参数，以满足 **CMSIS-NN** 推理时的要求，来观察模型在 pytorch 和 CMSIS-NN 上的效果是否对齐
 
 ```mermaid
 flowchart LR
     A[PyTorch 原始模型] --> B[PyTorch 量化模型]
-    B --> C[模拟 Pytorch 量化推理过程]
+    B --> C[模拟 CMSIS-NN 量化推理过程]
     C --> D[提取量化参数]
     D --> E[CMSIS-NN 部署]
 ```
@@ -22,17 +22,15 @@ flowchart LR
 ### 目录结构
 
 + [`CMSIS_NN_simulator`]()：CMSIS-NN 神经网络算子模拟
-+ [`dataset`]()：储存 MNIST 数据
++ [`dataset`]()：储存 MNIST 数据集
 + [`doc`]()：一些相关文档
 + [`eval`]()：模型评估
 + [`models`]()：Pytorch 模型、量化模型
-+ [`parameter`]()：储存模型参数
-+ [`train`]()：模型训练、训练参数
++ [`parameter`]()：储存模型参数（运行后生成）
++ [`train`]()：模型训练函数、训练参数
 + [`utils`]()：一些常用功能
 
 ### 功能特性
-
-**Note**：“实现” 指的是该功能在 **CMSIS-NN 推理** 和 **torch 量化推理** 实现对齐
 
 | 功能            | 是/否实现 | 备注                           |
 | --------------- | --------- | ------------------------------ |
@@ -43,18 +41,23 @@ flowchart LR
 | LSTM            |           |                                |
 | ==TODO==        |           |                                |
 
+>  *Note*：“实现” 指的是已确认该功能在 **CMSIS-NN 推理** 和 **Torch 量化推理** 可对齐
+
 ### 如何使用
 
-1. 训练：获取原始模型参数
+1. 训练：模型参数将以原始格式保存在 `./parameter/xxx.pt` 文件中。
 
 ```powershell
-python xxNet_train.py
+python xxx_train.py
 ```
 
-2. 
+2. 推理：
+   1. 获取准确率： 1）torch原始模型；2）torch量化模型；3）模拟CMSIS-NN模型
+   2. 导出 CMSIS-NN 推理所需参数
+
 
 ```powershell
-python xxNet_cmsisnn.py
+python xxx_cmsisnn.py
 ```
 
 

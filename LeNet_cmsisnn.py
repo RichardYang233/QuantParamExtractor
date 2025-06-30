@@ -73,21 +73,23 @@ accuracy = evaluate(model, test_loader)
 print(f"原始模型精度: {accuracy:.2f}%")
 
 
-# ---------- 保存 weight、bias 至 C数组 ---------- #
+# ---------- CMSIS-NN 推理所需参数导出 ---------- #
 
-export_tensor_as_c_array(conv1_simulator.weight_int8, "./parameter/LeNet/", "conv1_kernel", "conv1_kernel", "int8_t")
-export_tensor_as_c_array(conv1_simulator.bias_int32, "./parameter/LeNet/", "conv1_bias", "conv1_bias", "int32_t")
-export_tensor_as_c_array(conv2_simulator.weight_int8, "./parameter/LeNet/", "conv2_kernel", "conv2_kernel", "int8_t")
-export_tensor_as_c_array(conv2_simulator.bias_int32, "./parameter/LeNet/", "conv2_bias", "conv2_bias", "int32_t")
+# 将 weight、bias 导出为 C数组 #
 
-export_tensor_as_c_array(fc1_simulator.weight_int8, "./parameter/LeNet/", "fc1_weight", "fc1_weight", "int8_t")
-export_tensor_as_c_array(fc1_simulator.bias_int32, "./parameter/LeNet/", "fc1_bias", "fc1_bias", "int32_t")
-export_tensor_as_c_array(fc2_simulator.weight_int8, "./parameter/LeNet/", "fc2_weight", "fc2_weight", "int8_t")
-export_tensor_as_c_array(fc2_simulator.bias_int32, "./parameter/LeNet/", "fc2_bias", "fc2_bias", "int32_t")
-export_tensor_as_c_array(fc3_simulator.weight_int8, "./parameter/LeNet/", "fc3_weight", "fc3_weight", "int8_t")
-export_tensor_as_c_array(fc3_simulator.bias_int32, "./parameter/LeNet/", "fc3_bias", "fc3_bias", "int32_t")
+# export_tensor_as_c_array(conv1_simulator.weight_int8, "./parameter/LeNet/", "conv1_kernel", "conv1_kernel", "int8_t")
+# export_tensor_as_c_array(conv1_simulator.bias_int32, "./parameter/LeNet/", "conv1_bias", "conv1_bias", "int32_t")
+# export_tensor_as_c_array(conv2_simulator.weight_int8, "./parameter/LeNet/", "conv2_kernel", "conv2_kernel", "int8_t")
+# export_tensor_as_c_array(conv2_simulator.bias_int32, "./parameter/LeNet/", "conv2_bias", "conv2_bias", "int32_t")
 
-# ---------- print 反量化参数 ---------- #
+# export_tensor_as_c_array(fc1_simulator.weight_int8, "./parameter/LeNet/", "fc1_weight", "fc1_weight", "int8_t")
+# export_tensor_as_c_array(fc1_simulator.bias_int32, "./parameter/LeNet/", "fc1_bias", "fc1_bias", "int32_t")
+# export_tensor_as_c_array(fc2_simulator.weight_int8, "./parameter/LeNet/", "fc2_weight", "fc2_weight", "int8_t")
+# export_tensor_as_c_array(fc2_simulator.bias_int32, "./parameter/LeNet/", "fc2_bias", "fc2_bias", "int32_t")
+# export_tensor_as_c_array(fc3_simulator.weight_int8, "./parameter/LeNet/", "fc3_weight", "fc3_weight", "int8_t")
+# export_tensor_as_c_array(fc3_simulator.bias_int32, "./parameter/LeNet/", "fc3_bias", "fc3_bias", "int32_t")
+
+# print 反量化参数 #
 
 conv1_simulator.print_multi_shift_zero_point()
 conv2_simulator.print_multi_shift_zero_point()

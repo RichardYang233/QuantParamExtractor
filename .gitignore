@@ -7,4 +7,9 @@ __pycache__/
 #
 .vscode/
 
+#
+dataset/
 
+#
+parameter/**/*.h
+parameter/**/*.pt

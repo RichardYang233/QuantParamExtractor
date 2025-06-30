@@ -3,7 +3,6 @@ import torch
 from models import *
 from train import *
 from eval import *
-from dataset import *
 from utils import *
 from CMSIS_NN_simulator import *
 
@@ -55,6 +54,7 @@ model = load_state_dict_2_model(FCNet(), FCNET_PARAMS_SAVE_PATH)
 accuracy = evaluate(model, test_loader)
 print(f"原始模型精度: {accuracy:.2f}%")
 
+# ---------- CMSIS-NN 推理所需参数导出 ---------- #
 
 # # 保存 weight、bias 至 C数组
 # print(hidden_layer_simulator.weight_int8.size())
@@ -66,10 +66,11 @@ print(f"原始模型精度: {accuracy:.2f}%")
 # print(output_layer_simulator.bias_int32.size())
 # export_tensor_as_c_array(output_layer_simulator.bias_int32, "output_layer_bias", "output_layer_bias", "int32_t")
 
-print(hidden_layer_simulator.multiplier)
-print(hidden_layer_simulator.shift)
-print(output_layer_simulator.multiplier)
-print(output_layer_simulator.shift)
+# print 反量化参数 #
+
+hidden_layer_simulator.print_multi_shift_zero_point()
+output_layer_simulator.print_multi_shift_zero_point()
+
 
 
 
